@@ -107,14 +107,14 @@ void enfants::supprimer_enfant(QTableWidget *t, QTableWidgetItem *item)
 void enfants::modifier_enfant(QTableWidget *t,QTableWidgetItem *item)
 {
 
-    int row_syndic=item->row();
-    int column_syndic=item->column();
+    int row=item->row();
+    int column=item->column();
 
-    QString text_row=t->item(row_syndic,0)->text();
+    QString text_row=t->item(row,0)->text();
         int text_row_int=text_row.toInt();
 qDebug()<<text_row_int;
 qDebug()<<text_row;
-QString get_column=t->horizontalHeaderItem(column_syndic)->text();
+QString get_column=t->horizontalHeaderItem(column)->text();
 qDebug()<<get_column;
  QSqlQuery qry;
 qry.prepare("update enfants set "+get_column+"='"+item->text()+"' where ID_ENFANT='"+text_row+"'");
@@ -149,4 +149,29 @@ void enfants::rechercher_enfant(QTableWidget *t,QString arg1)
        i++;
 
        }
+}
+void enfants::trier_enfant(QTableWidget *t)
+{
+    QSqlQuery qry;
+    int i;
+    int j=0;
+    qry.exec("select * from enfants order by age ASC");
+    while(qry.next()){
+        j++;
+    }
+    t->setRowCount(j);
+    t->setColumnCount(5);
+    t->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    t->setHorizontalHeaderLabels(QString("id;nom_enfant;prenom_enfant;age_enfant;matricule_parent").split(";"));
+    i=1;
+    qry.exec("select * from enfants order by age ASC");
+    while(qry.next()){
+       // qDebug()<<qry.next();
+        t->setItem(i-1,0,new QTableWidgetItem(qry.value(0).toString()));
+        t->setItem(i-1,1,new QTableWidgetItem(qry.value(1).toString()));
+        t->setItem(i-1,2,new QTableWidgetItem(qry.value(2).toString()));
+        t->setItem(i-1,3,new QTableWidgetItem(qry.value(3).toString()));
+        t->setItem(i-1,4,new QTableWidgetItem(qry.value(4).toString()));
+     i++;
+    }
 }

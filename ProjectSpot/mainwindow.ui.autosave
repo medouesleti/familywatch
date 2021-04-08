@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>958</width>
-    <height>603</height>
+    <width>936</width>
+    <height>637</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -171,7 +171,7 @@ border: 2px solid #595fdd;
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="ajouter_en">
      <property name="styleSheet">
@@ -742,7 +742,7 @@ background-image: url(&quot;bg.png&quot;);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>958</width>
+     <width>936</width>
      <height>26</height>
     </rect>
    </property>

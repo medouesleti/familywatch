@@ -13,12 +13,15 @@
 #include <QPrintDialog>
 #include <QPrinter>
 #include <exportexcelobject.h>
+#include "QSound"
+#include "QIntValidator"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->textBrowser_activite->show();
     activite a;
     a.afficher_activite(ui->tableWidget_activite);
     enfants e;
@@ -28,6 +31,13 @@ MainWindow::MainWindow(QWidget *parent)
     while(qry.next()){
     ui->comboBox_enfant->addItem(qry.value(0).toString()+"-"+qry.value(1).toString());
     }
+    ui->lineEdit_ageenfant->setValidator(new QIntValidator);
+    ui->lineEdit_parent->setValidator(new QIntValidator);
+    ui->lineEdit_nomenfant->setValidator(new QRegExpValidator( QRegExp("^[a-zA-Z]+$"), this ));
+     ui->lineEdit_prenomenfant->setValidator(new QRegExpValidator( QRegExp("^[a-zA-Z]+$"), this ));
+     ui->lineEdit_nom->setValidator(new QRegExpValidator( QRegExp("^[a-zA-Z]+$"), this ));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -38,27 +48,44 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actualiser_activite_clicked()
 {
+    QSound::play("click.wav");
     activite a;
     a.afficher_activite(ui->tableWidget_activite);
 }
 
 void MainWindow::on_pushButton_ajouter_clicked()
 {
+    QSound::play("click.wav");
     activite a;
+    QString nom_act =ui->lineEdit_nom->text();
+    QString desc =ui->lineEdit_desc->text();
+    int dureeDhour =ui->timeEdit_dureeD->text().midRef(0,ui->timeEdit_dureeD->text().indexOf(":")).toInt();
+    int dureeDmin =ui->timeEdit_dureeD->text().midRef(ui->timeEdit_dureeD->text().indexOf(":"),ui->timeEdit_dureeD->text().length()).toInt();
+    int dureeAhour =ui->timeEdit_dureeA->text().midRef(0,ui->timeEdit_dureeA->text().indexOf(":")).toInt();
+    int dureeAmin =ui->timeEdit_dureeA->text().midRef(ui->timeEdit_dureeA->text().indexOf(":"),ui->timeEdit_dureeA->text().length()).toInt();
+    QString rdv =ui->textEdit_rdv->toPlainText();
     a.setNom_activite(ui->lineEdit_nom->text());
     a.setDescription(ui->lineEdit_desc->text());
     a.setDuree(ui->timeEdit_dureeD->text()+"-"+ui->timeEdit_dureeA->text());
     a.setTemps(ui->timeEdit_temps->text());
     a.setDatee(ui->dateEdit_datee->date().toString("dd-MM-yyyy"));
     a.setRdv(ui->textEdit_rdv->toPlainText());
-    qDebug()<<ui->comboBox_enfant->currentText().midRef(0,ui->comboBox_enfant->currentText().indexOf("-")).toInt();
+   // qDebug()<<ui->comboBox_enfant->currentText().midRef(0,ui->comboBox_enfant->currentText().indexOf("-")).toInt();
     a.setId_enfant(ui->comboBox_enfant->currentText().midRef(0,ui->comboBox_enfant->currentText().indexOf("-")).toInt());
+    if(!nom_act.isEmpty() && !desc.isEmpty() && !rdv.isEmpty()) {
+      if(dureeDhour<=dureeAhour && dureeDmin<=dureeAmin) {
    if(a.ajouter_activite())
     {
-       QMessageBox::information(this,"Ajouter Actualite","Vous avez bien enregistrer l'enfant ");
+       QMessageBox::information(this,"Ajouter Actualite","Vous avez bien enregistrer l'Actualite ");
     }
     else
-        QMessageBox::warning(this,"Ajouter Actualite","Verifier votre champ");
+        QMessageBox::warning(this,"Ajouter Actualite","Vous ne pas enregistrer l'Actualite");
+    }
+      else
+         QMessageBox::warning(this,"Ajouter Actualite","Duree D doit etre inferieur a Duree A");
+}
+    else
+         QMessageBox::warning(this,"Ajouter Actualite","Verifier votre champ");
 }
 
 void MainWindow::on_tableWidget_activite_itemClicked(QTableWidgetItem *item)
@@ -70,6 +97,7 @@ void MainWindow::on_tableWidget_activite_itemClicked(QTableWidgetItem *item)
 
 void MainWindow::on_pushButton_supprimer_clicked()
 {
+    QSound::play("click.wav");
     activite a;
     qDebug()<<tem_activite->row();
     a.supprimer_activite(ui->tableWidget_activite,tem_activite);
@@ -78,6 +106,7 @@ void MainWindow::on_pushButton_supprimer_clicked()
 
 void MainWindow::on_pushButton_modifier_clicked()
 {
+    QSound::play("click.wav");
     activite a;
     QString test=QString::number(row_activite);
     QString testt=QString::number(column_activite);
@@ -112,12 +141,14 @@ void MainWindow::on_lineEdit_6_textChanged(const QString &arg1)
 
 void MainWindow::on_pushButton_clicked()
 {
+    QSound::play("click.wav");
     enfants e;
     e.afficher_enfant(ui->tableWidget_enfant);
 }
 
 void MainWindow::on_pushButton_2_clicked()
 {
+    QSound::play("click.wav");
     enfants e;
     e.supprimer_enfant(ui->tableWidget_enfant,tem_enfant);
     QMessageBox::information(this,"supprimer","vous avez bien supprimer une partie de tableau");
@@ -125,6 +156,7 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
+    QSound::play("click.wav");
     enfants e;
     QString test=QString::number(row_enfant);
     QString testt=QString::number(column_enfant);
@@ -140,14 +172,24 @@ void MainWindow::on_pushButton_3_clicked()
 
 void MainWindow::on_pushButton_ajouterenfant_clicked()
 {
+    QSound::play("click.wav");
     enfants e;
+    QString nom_enf=ui->lineEdit_nomenfant->text();
+    QString prenom_enf=ui->lineEdit_prenomenfant->text();
+    QString age_enf=ui->lineEdit_ageenfant->text();
+    QString parent_enf=ui->lineEdit_parent->text();
     e.setNom_enfant(ui->lineEdit_nomenfant->text());
     e.setPrenom_enfant(ui->lineEdit_prenomenfant->text());
     e.setAge_enfant(ui->lineEdit_ageenfant->text().toInt());
     e.setMatricule_parent(ui->lineEdit_parent->text().toInt());
+    if(!nom_enf.isEmpty() && !prenom_enf.isEmpty() && !age_enf.isEmpty() && !parent_enf.isEmpty())
+    {
     if(e.ajouter_enfant())
     {
        QMessageBox::information(this,"Ajouter Enfants","Vous avez bien enregistrer l'enfant ");
+    }
+    else
+        QMessageBox::warning(this,"Ajouter Enfants","Vous ne pas enregistrer l'enfant");
     }
     else
         QMessageBox::warning(this,"Ajouter Enfants","Verifier votre champ");
@@ -155,6 +197,7 @@ void MainWindow::on_pushButton_ajouterenfant_clicked()
 
 void MainWindow::on_pushButton_4_clicked()
 {
+    QSound::play("click.wav");
     QPrinter printer;
              printer.setPrinterName("test");
              QPrintDialog dialog(&printer, this);
@@ -169,15 +212,19 @@ void MainWindow::on_pushButton_4_clicked()
 
 void MainWindow::on_pushButton_pdf_clicked()
 {
-    QPrinter printer;
+    QSound::play("click.wav");
+  /*  QPrinter printer;
              printer.setPrinterName("test");
              QPrintDialog dialog(&printer, this);
              if (dialog.exec() == QDialog::Rejected) return;
-             ui->tableWidget_activite->render(&printer);
+             ui->tableWidget_activite->render(&printer);*/
+    activite a;
+    a.exporterpdf_activite(ui->textBrowser_activite);
 }
 
 void MainWindow::on_export_exl_clicked()
 {
+    QSound::play("click.wav");
     QString fileName = QFileDialog::getSaveFileName(this, tr("Excel file"), qApp->applicationDirPath (),
                                                         tr("Excel Files (*.xls)"));
         if (fileName.isEmpty())
@@ -204,4 +251,18 @@ void MainWindow::on_export_exl_clicked()
                                      QString(tr("%1 records exported!")).arg(retVal)
                                      );
         }
+}
+
+void MainWindow::on_pb_trier_date_clicked()
+{
+    QSound::play("click.wav");
+    activite a;
+    a.trier_activite(ui->tableWidget_activite);
+}
+
+void MainWindow::on_pb_triDate_clicked()
+{
+    QSound::play("click.wav");
+    enfants e;
+    e.trier_enfant(ui->tableWidget_enfant);
 }

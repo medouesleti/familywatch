@@ -53,7 +53,7 @@ public:
     void supprimer_activite(QTableWidget *t,QTableWidgetItem *item);
     void rechercher_activite(QTableWidget *t,QString arg1);
     void exporterpdf_activite(QTextBrowser *text);
-
+    void trier_activite(QTableWidget *t);
 
     int getId_enfant() const;
     void setId_enfant(int value);

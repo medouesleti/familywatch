@@ -54,6 +54,10 @@ private slots:
 
     void on_export_exl_clicked();
 
+    void on_pb_trier_date_clicked();
+
+    void on_pb_triDate_clicked();
+
 private:
     Ui::MainWindow *ui;
     activite tmpactivite;

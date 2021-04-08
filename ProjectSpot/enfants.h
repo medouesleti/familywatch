@@ -44,6 +44,7 @@ public:
     void supprimer_enfant(QTableWidget *t,QTableWidgetItem *item);
     void rechercher_enfant(QTableWidget *t,QString arg1);
     void exporterpdf_enfant(QTextBrowser *text);
+    void trier_enfant(QTableWidget *t);
 
 private:
     int id;
